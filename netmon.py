@@ -33,7 +33,11 @@ def is_internet_reachable():
         return True
     except OSError:
         return False
-    
+
+def get_pub_ip():
+    ip = subprocess.getoutput('curl -s ifconfig.io')
+    return ip
+
 def is_plugged_in(interface):
     result = subprocess.getoutput(f"cat /sys/class/net/{interface}/carrier")
     return result == '1' # If cable is connected the result is 1    
@@ -51,7 +55,8 @@ def enumerate(interface):
                 write_message(f"[{time_stamp}] Unable to retrieve local IP address.")
             else:
                 write_message(f"[{time_stamp}] Local IP address: {local_ip}")
-            # Get remote device info
+            
+            # Get LAN gateway info
             remote_ip, remote_mac = get_remote_device_info(local_ip)
             if remote_ip and remote_mac:
                 write_message(f"[{time_stamp}] Remote Device IP address: {remote_ip}")
@@ -59,8 +64,11 @@ def enumerate(interface):
                 # Check internet connectivity via eth0
                 if is_internet_reachable():
                     write_message(f"[{time_stamp}] Internet is reachable via {interface}")
+                    ext_ip = get_pub_ip()
+                    write_message(f'[{time_stamp}] Public IP address: {ext_ip}')
                 else:
                     write_message(f"[{time_stamp}] No internet connectivity via {interface}")
+            
             shutdown()
             
     except KeyboardInterrupt:
