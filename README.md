@@ -9,22 +9,22 @@
 2. Customize the image if you'd like.
 3. First boot/installation
 
-4. Download the files
+4. Install dependancies
 ```
-git clone <repo>
-```
-
-5. Install dependancies
-```
-sudo apt update && sudo apt install python3-scapy -y
+sudo apt update && sudo apt install git python3-scapy -y
 ```
 
-6. Set up a cronjob
+5. Download the files
+```
+git clone https://github.com/nobodynate/portcheck.git
+```
+
+6. Set up a cronjob (must run as root to send Layer 2 packets for LAN gateway MAC address gathering)
 ```
 sudo crontab -e
 ```
 
-7. Add the following line to crontab (must run as root to send Layer 2 packets)
+7. Add the following line to crontab 
 ```
 @reboot python3 <full path to python script>
 ```
